@@ -1,7 +1,7 @@
 # Laravel 5 HAL+JSON Transformer Package
 
 
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/nilportugues/laravel5-haljson-transformer/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/nilportugues/laravel5-haljson-transformer/?branch=master) [![SensioLabsInsight](https://insight.sensiolabs.com/projects/22db88f5-d061-4b32-bad1-4b806ac07318/mini.png)](https://insight.sensiolabs.com/projects/22db88f5-d061-4b32-bad1-4b806ac07318) 
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/nilportugues/laravel5-haljson-transformer/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/nilportugues/laravel5-haljson-transformer/?branch=master) [![SensioLabsInsight](https://insight.sensiolabs.com/projects/93029d8e-7052-42e0-a7db-fabbd2e566d5/mini.png)](https://insight.sensiolabs.com/projects/93029d8e-7052-42e0-a7db-fabbd2e566d5) 
 [![Latest Stable Version](https://poser.pugx.org/nilportugues/laravel5-haljson/v/stable)](https://packagist.org/packages/nilportugues/haljson) 
 [![Total Downloads](https://poser.pugx.org/nilportugues/laravel5-haljson/downloads)](https://packagist.org/packages/nilportugues/haljson) 
 [![License](https://poser.pugx.org/nilportugues/laravel5-haljson/license)](https://packagist.org/packages/nilportugues/haljson) 
