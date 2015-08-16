@@ -1,0 +1,29 @@
+{
+    "name": "nilportugues/laravel5-haljson",
+    "type": "library",
+    "description": "Laravel 5 HAL+JSON API Transformer Package",
+    "keywords": ["laravel", "laravel5", "lumen", "json", "api", "hal", "haljson", "serializer", "transformer", "psr7", "response"],
+    "homepage": "http://nilportugues.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nil Portugués Calderó",
+            "email": "contact@nilportugues.com",
+            "role": "Project Lead Developer"
+        }
+    ],
+    "require": {
+        "nilportugues/haljson": "~1.0",
+        "nilportugues/serializer": "~1.0",
+        "symfony/psr-http-message-bridge": "0.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "NilPortugues\\Laravel5\\HalJsonSerializer\\" : "src/NilPortugues/Laravel5/HalJsonSerializer/"
+        }
+    },
+    "config": {
+        "preferred-install": "dist"
+    },
+    "minimum-stability": "alpha"
+}
