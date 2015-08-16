@@ -98,7 +98,7 @@ return [
         ],
         'curies' => [
             'name' => 'example',
-            'href' => route("get_example_curie_rel"),
+            'href' => "http://example.com/docs/rels/{rel}",
         ]
     ],
     [
@@ -114,7 +114,7 @@ return [
         ],
         'curies' => [
             'name' => 'example',
-            'href' => route("get_example_curie_rel"),
+            'href' => "http://example.com/docs/rels/{rel}",
         ]
     ],
     [
@@ -132,7 +132,7 @@ return [
         ],
         'curies' => [
             'name' => 'example',
-            'href' => route("get_example_curie_rel"),
+            'href' => "http://example.com/docs/rels/{rel}",
         ]
     ],
     [
@@ -150,7 +150,7 @@ return [
         ],
         'curies' => [
             'name' => 'example',
-            'href' => route("get_example_curie_rel"),
+            'href' => "http://example.com/docs/rels/{rel}",
         ]
     ],
     [
@@ -166,7 +166,7 @@ return [
         ],
         'curies' => [
             'name' => 'example',
-            'href' => route("get_example_curie_rel"),
+            'href' => "http://example.com/docs/rels/{rel}",
         ]
     ],
     [
@@ -182,7 +182,7 @@ return [
         ],
         'curies' => [
             'name' => 'example',
-            'href' => route("get_example_curie_rel"),
+            'href' => "http://example.com/docs/rels/{rel}",
         ]
     ],
 ];
@@ -324,7 +324,7 @@ Content-type: application/hal+json
         "curies": [
             {
                 "name": "example",
-                "href": route("get_example_curie_rel"),
+                "href": "http://example.com/docs/rels/{rel}",
                 "templated": true
             }
         ],
