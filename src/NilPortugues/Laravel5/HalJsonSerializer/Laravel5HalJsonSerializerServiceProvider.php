@@ -38,7 +38,7 @@ class Laravel5HalJsonSerializerServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__.self::PATH, 'haljson_mapping');
         $this->app->singleton(\NilPortugues\Serializer\Serializer::class, function ($app) {
-            return HalJsonSerialize::instance($app['config']->get('haljson_mapping'));
+            return HalJsonSerializer::instance($app['config']->get('haljson_mapping'));
         });
     }
 
