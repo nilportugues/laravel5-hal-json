@@ -110,7 +110,7 @@ return [
             'postId',
         ],
         'urls' => [
-            'self' => 'self' => route('get_post'),
+            'self' => route('get_post'),
         ],
         'curies' => [
             'name' => 'example',
