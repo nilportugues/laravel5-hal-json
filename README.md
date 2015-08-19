@@ -274,7 +274,7 @@ class PostController extends \Laravel\Lumen\Routing\Controller
    private $postRepository;
 
    /**
-    * @var PostRepository
+    * @var HalJsonSerializer
     */
    private $serializer;
 
