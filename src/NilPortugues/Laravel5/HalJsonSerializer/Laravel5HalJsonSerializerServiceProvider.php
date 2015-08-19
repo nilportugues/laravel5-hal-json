@@ -10,7 +10,11 @@
  */
 namespace NilPortugues\Laravel5\HalJsonSerializer;
 
+
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\ServiceProvider;
+use NilPortugues\Api\HalJson\HalJsonTransformer;
+use NilPortugues\Api\Mapping\Mapper;
 
 class Laravel5HalJsonSerializerServiceProvider extends ServiceProvider
 {
@@ -30,16 +34,46 @@ class Laravel5HalJsonSerializerServiceProvider extends ServiceProvider
     {
         $this->publishes([__DIR__.self::PATH => config('haljson.php')]);
     }
-
     /**
      * Register the service provider.
      */
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__.self::PATH, 'haljson_mapping');
-        $this->app->singleton(\NilPortugues\Serializer\Serializer::class, function ($app) {
-            return HalJsonSerializer::instance($app['config']->get('haljson_mapping'));
-        });
+        $this->mergeConfigFrom(__DIR__.self::PATH, 'haljson');
+        $this->app->singleton(\NilPortugues\Laravel5\HalJsonSerializer\HalJsonSerializer::class, function ($app) {
+                $mapping = $app['config']->get('haljson');
+                $key = md5(json_encode($mapping));
+                $cachedMapping = Cache::get($key);
+                if(!empty($cachedMapping)) {
+                    return unserialize($cachedMapping);
+                }
+                self::parseNamedRoutes($mapping);
+                $serializer = new HalJsonSerializer(new HalJsonTransformer(new Mapper($mapping)));
+                Cache::put($key, serialize($serializer),60*60*24);
+                return $serializer;
+            });
+    }
+    /**
+     * @param array $mapping
+     *
+     * @return mixed
+     */
+    private static function parseNamedRoutes(array &$mapping)
+    {
+        foreach ($mapping as &$map) {
+            self::parseUrls($map);
+        }
+    }
+    /**
+     * @param array $map
+     */
+    private static function parseUrls(array &$map)
+    {
+        if (!empty($map['urls'])) {
+            foreach ($map['urls'] as &$namedUrl) {
+                $namedUrl = urldecode(route($namedUrl));
+            }
+        }
     }
 
     /**
@@ -49,6 +83,6 @@ class Laravel5HalJsonSerializerServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return ['haljson_mapping'];
+        return ['haljson'];
     }
 }

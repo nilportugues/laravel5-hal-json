@@ -21,17 +21,36 @@ $ composer require nilportugues/laravel5-haljson
 
 **Step 1: Add the Service Provider**
 
+**Laravel**
+
+Open up `config/app.php` and add the following line under `providers` array:
+
+```php
+'providers' => [
+
+    //...
+    \NilPortugues\Laravel5\HalJsonSerializer\Laravel5HalJsonSerializerServiceProvider::class,
+],
+```
+
+**Lumen**
+
 Open up `bootstrap/app.php`and add the following lines before the `return $app;` statement:
 
 ```php
-$app->register('NilPortugues\Laravel5\HalJsonSerializer\Laravel5HalJsonSerializerServiceProvider');
-$app['config']->set('haljson_mapping', include('haljson.php'));
+$app->register(\NilPortugues\Laravel5\HalJsonSerializer\Laravel5HalJsonSerializerServiceProvider::class);
+$app->configure('haljson');
+```
+
+Also, enable Facades by uncommenting:
+
+```php
+$app->withFacades();
 ```
 
 **Step 2: Add the mapping**
 
-Create a `haljson.php` file in `bootstrap/` directory. This file should return an array returning all the class mappings.
-
+Create a `haljson.php` file in `config/` directory. This file should return an array returning all the class mappings.
 
 **Step 3: Usage**
 
@@ -91,8 +110,8 @@ return [
             'postId',
         ],
         'urls' => [
-            'self' => route('get_post'),
-            'comments' => route('get_post_comments'),
+            'self' => 'get_post', //named route
+            'comments' => 'get_post_comments',//named route
         ],
         'curies' => [
             'name' => 'example',
@@ -108,7 +127,7 @@ return [
             'postId',
         ],
         'urls' => [
-            'self' => route('get_post'),
+            'self' => 'get_post',//named route
         ],
         'curies' => [
             'name' => 'example',
@@ -124,9 +143,9 @@ return [
             'userId',
         ],
         'urls' => [
-            'self' => route('get_user'),
-            'friends' => route('get_user_friends'),
-            'comments' => route('get_user_comments'),
+            'self' => 'get_user',//named route
+            'friends' => 'get_user_friends',//named route
+            'comments' => 'get_user_comments',//named route
         ],
         'curies' => [
             'name' => 'example',
@@ -142,9 +161,9 @@ return [
             'userId',
         ],
         'urls' => [
-            'self' => route('get_user'),
-            'friends' => route('get_user_friends'),
-            'comments' => route('get_user_comments'),
+            'self' => 'get_user',//named route
+            'friends' => 'get_user_friends',//named route
+            'comments' => 'get_user_comments',//named route
         ],
         'curies' => [
             'name' => 'example',
@@ -160,7 +179,7 @@ return [
             'commentId',
         ],
         'urls' => [
-            'self' => route('get_comment'),
+            'self' => 'get_comment',//named route
         ],
         'curies' => [
             'name' => 'example',
@@ -176,7 +195,7 @@ return [
             'commentId',
         ],
         'urls' => [
-            'self' => route('get_comment'),
+            'self' => 'get_comment',//named route
         ],
         'curies' => [
             'name' => 'example',
@@ -187,7 +206,32 @@ return [
 
 ```
 
+
 The named routes belong to the `app/Http/routes.php`. Here's a sample for the routes provided mapping:
+
+**Laravel**
+
+```php
+Route::get(
+  '/docs/rels/{rel}',
+  ['as' => 'get_example_curie_rel', 'uses' => 'ExampleCurieController@getRelAction']
+);
+
+
+Route::get(
+  '/post/{postId}',
+  ['as' => 'get_post', 'uses' => 'PostController@getPostAction']
+);
+
+Route::get(
+  '/post/{postId}/comments',
+  ['as' => 'get_post_comments', 'uses' => 'CommentsController@getPostCommentsAction']
+);
+
+//...
+```
+
+**Lumen**
 
 ```php
 $app->get(
@@ -206,7 +250,7 @@ $app->get(
 );
 
 //...
-``` 
+```
 
 All of this set up allows you to easily use the `Serializer` service as follows:
 
@@ -216,44 +260,50 @@ All of this set up allows you to easily use the `Serializer` service as follows:
 namespace App\Http\Controllers;
 
 use Acme\Domain\Dummy\PostRepository;
-use NilPortugues\Api\HalJson\Http\Message\Response;
-use NilPortugues\Serializer\Serializer;
-use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
+use NilPortugues\Laravel5\HalJsonSerializer\HalJsonSerializer;
+use NilPortugues\Laravel5\HalJsonSerializer\HalJsonResponseTrait;
 
 
 class PostController extends \Laravel\Lumen\Routing\Controller
 {
-    /**
-     * @var PostRepository
-     */
-    private $postRepository;
+    use HalJsonResponseTrait;
+       
+   /**
+    * @var PostRepository
+    */
+   private $postRepository;
 
-    /**
-     * @param PostRepository $postRepository
-     * @param Serializer $halJsonSerializer
-     */
-    public function __construct(PostRepository $postRepository, Serializer $halJsonSerializer)
-    {
-        $this->postRepository = $postRepository;
-        $this->halJsonSerializer = $halJsonSerializer;
-    }
+   /**
+    * @var PostRepository
+    */
+   private $serializer;
 
-    /**
-     * @param int $postId
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function getPostAction($postId)
-    {
-        $post = $this->postRepository->findById($postId);
+   /**
+    * @param PostRepository $postRepository
+    * @param HalJsonSerializer $halJsonSerializer
+    */
+   public function __construct(PostRepository $postRepository, HalJsonSerializer $halJsonSerializer)
+   {
+       $this->postRepository = $postRepository;
+       $this->serializer = $halJsonSerializer;
+   }
 
-        /** @var \NilPortugues\Api\HalJson\HalJsonTransformer $transformer */
-        $transformer = $this->serializer->getTransformer();
-        $transformer->setSelfUrl(route('get_post', ['postId' => $postId]));
-        $transformer->setNextUrl(route('get_post', ['postId' => $postId+1]));
+   /**
+    * @param int $postId
+    *
+    * @return \Symfony\Component\HttpFoundation\Response
+    */
+   public function getPostAction($postId)
+   {
+       $post = $this->postRepository->findById($postId);
 
-        return (new HttpFoundationFactory())->createResponse(new Response($this->serializer->serialize($post)));
-    }
+       /** @var \NilPortugues\Api\HalJson\HalJsonTransformer $transformer */
+       $transformer = $this->serializer->getTransformer();
+       $transformer->setSelfUrl(route('get_post', ['postId' => $postId]));
+       $transformer->setNextUrl(route('get_post', ['postId' => $postId+1]));
+
+       return $this->response($this->serializer->serialize($post));
+   }
 }
 ```
 
@@ -354,25 +404,23 @@ Content-type: application/hal+json
 }
 ```
 
-#### Response objects
+#### Response objects (HalJsonResponseTrait)
 
-The following PSR-7 Response objects providing the right headers and HTTP status codes are available:
+The following `HalJsonResponseTrait` methods are provided to return the right headers and HTTP status codes are available:
 
-- `NilPortugues\Api\HalJson\Http\Message\ErrorResponse($json)`
-- `NilPortugues\Api\HalJson\Http\Message\ResourceCreatedResponse($json)`
-- `NilPortugues\Api\HalJson\Http\Message\ResourceDeletedResponse($json)`
-- `NilPortugues\Api\HalJson\Http\Message\ResourceNotFoundResponse($json)`
-- `NilPortugues\Api\HalJson\Http\Message\ResourcePatchErrorResponse($json)`
-- `NilPortugues\Api\HalJson\Http\Message\ResourcePostErrorResponse($json)`
-- `NilPortugues\Api\HalJson\Http\Message\ResourceProcessingResponse($json)`
-- `NilPortugues\Api\HalJson\Http\Message\ResourceUpdatedResponse($json)`
-- `NilPortugues\Api\HalJson\Http\Message\Response($json)`
-- `NilPortugues\Api\HalJson\Http\Message\UnsupportedActionResponse($json)`
+```php
+    private function errorResponse($json);
+    private function resourceCreatedResponse($json);
+    private function resourceDeletedResponse($json);
+    private function resourceNotFoundResponse($json);
+    private function resourcePatchErrorResponse($json);
+    private function resourcePostErrorResponse($json);
+    private function resourceProcessingResponse($json);
+    private function resourceUpdatedResponse($json);
+    private function response($json);
+    private function unsupportedActionResponse($json);
+```    
 
-Due to the current lack of support for PSR-7 Requests and Responses in Laravel, it is also recommended to install the package `symfony/psr-http-message-bridge`that will bridge between the PHP standard and the Response object used by Laravel automatically, as seen in the Controller example code provided.
-
-
-<br>
 ## Quality
 
 To run the PHPUnit tests at the command line, go to the tests directory and issue phpunit.

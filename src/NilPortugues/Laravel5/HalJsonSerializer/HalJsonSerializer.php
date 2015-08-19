@@ -11,21 +11,18 @@
 namespace NilPortugues\Laravel5\HalJsonSerializer;
 
 use NilPortugues\Api\HalJson\HalJsonTransformer;
-use NilPortugues\Api\Mapping\Mapper;
 use NilPortugues\Serializer\Serializer;
 
 /**
  * Class HalJsonSerializer.
  */
-class HalJsonSerializer
+class HalJsonSerializer extends Serializer
 {
     /**
-     * @param array $mapping
-     *
-     * @return Serializer
+     * @param HalJsonTransformer $halJsonTransformer
      */
-    public static function instance(array $mapping)
+    public function __construct(HalJsonTransformer $halJsonTransformer)
     {
-        return new Serializer(new HalJsonTransformer(new Mapper($mapping)));
+        parent::__construct($halJsonTransformer);
     }
 }
