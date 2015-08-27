@@ -123,3 +123,4 @@ trait HalJsonResponseTrait
             ->createResponse(new \NilPortugues\Api\HalJson\Http\Message\UnsupportedActionResponse($json));
     }
 } 
+ 
