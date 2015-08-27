@@ -122,5 +122,4 @@ trait HalJsonResponseTrait
         return (new HttpFoundationFactory())
             ->createResponse(new \NilPortugues\Api\HalJson\Http\Message\UnsupportedActionResponse($json));
     }
-} 
- 
+}
