@@ -11,12 +11,12 @@
 namespace NilPortugues\Laravel5\HalJsonSerializer;
 
 use NilPortugues\Api\HalJson\HalJsonTransformer;
-use NilPortugues\Serializer\Serializer;
+use NilPortugues\Serializer\DeepCopySerializer;
 
 /**
  * Class HalJsonSerializer.
  */
-class HalJsonSerializer extends Serializer
+class HalJsonSerializer extends DeepCopySerializer
 {
     /**
      * @param HalJsonTransformer $halJsonTransformer
