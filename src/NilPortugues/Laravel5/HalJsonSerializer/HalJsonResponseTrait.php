@@ -19,7 +19,8 @@ trait HalJsonResponseTrait
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    private function errorResponse($json) {
+    private function errorResponse($json)
+    {
         return (new HttpFoundationFactory())
             ->createResponse(new \NilPortugues\Api\HalJson\Http\Message\ErrorResponse($json));
     }

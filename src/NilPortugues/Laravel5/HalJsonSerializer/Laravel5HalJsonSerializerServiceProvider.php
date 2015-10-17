@@ -10,11 +10,10 @@
  */
 namespace NilPortugues\Laravel5\HalJsonSerializer;
 
-
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\ServiceProvider;
 use NilPortugues\Api\HalJson\HalJsonTransformer;
-use NilPortugues\Api\Mapping\Mapper;
+use NilPortugues\Laravel5\HalJsonSerializer\Mapper\Mapper;
 
 class Laravel5HalJsonSerializerServiceProvider extends ServiceProvider
 {
@@ -44,12 +43,13 @@ class Laravel5HalJsonSerializerServiceProvider extends ServiceProvider
                 $mapping = $app['config']->get('haljson');
                 $key = md5(json_encode($mapping));
                 $cachedMapping = Cache::get($key);
-                if(!empty($cachedMapping)) {
+                if (!empty($cachedMapping)) {
                     return unserialize($cachedMapping);
                 }
                 self::parseNamedRoutes($mapping);
                 $serializer = new HalJsonSerializer(new HalJsonTransformer(new Mapper($mapping)));
                 Cache::put($key, serialize($serializer),60*60*24);
+
                 return $serializer;
             });
     }
