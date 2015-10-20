@@ -15,7 +15,7 @@ use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 trait HalJsonResponseTrait
 {
     /**
-     * @param  \Psr\Http\Message\ResponseInterface $response
+     * @param \Psr\Http\Message\ResponseInterface $response
      *
      * @return \Psr\Http\Message\ResponseInterface
      */

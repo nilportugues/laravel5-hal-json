@@ -50,7 +50,7 @@ class HalJsonSerializer extends DeepCopySerializer
 
         if (is_subclass_of($value, Model::class, true)) {
 
-            $stdClass                         = (object)$value->getAttributes();
+            $stdClass                         = (object) $value->getAttributes();
             $data                             = $this->serializeData($stdClass);
             $data[self::CLASS_IDENTIFIER_KEY] = get_class($value);
 
@@ -102,7 +102,7 @@ class HalJsonSerializer extends DeepCopySerializer
                                 foreach ($returned->getResults() as $model) {
 
                                     if (is_object($model)) {
-                                        $stdClass                         = (object)$model->getAttributes();
+                                        $stdClass                         = (object) $model->getAttributes();
                                         $data                             = $this->serializeData($stdClass);
                                         $data[self::CLASS_IDENTIFIER_KEY] = get_class($model);
 

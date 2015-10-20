@@ -75,7 +75,7 @@ class Laravel5HalJsonSerializerServiceProvider extends ServiceProvider
             $mappingProperty->setAccessible(true);
 
             $otherUrls = (array) $mappingProperty->getValue($mapping);
-            if(!empty($otherUrls)) {
+            if (!empty($otherUrls)) {
                 foreach ($otherUrls as &$url) {
                     $url = urldecode(route($url));
                 }
@@ -85,7 +85,6 @@ class Laravel5HalJsonSerializerServiceProvider extends ServiceProvider
 
         return $mapper;
     }
-
 
     /**
      * @param Mapping         $mapping
@@ -98,7 +97,7 @@ class Laravel5HalJsonSerializerServiceProvider extends ServiceProvider
         $mappingProperty->setAccessible(true);
         $value = $mappingProperty->getValue($mapping);
 
-        if(!empty($value)) {
+        if (!empty($value)) {
             $value = urldecode(route($value));
             $mappingProperty->setValue($mapping, $value);
         }
