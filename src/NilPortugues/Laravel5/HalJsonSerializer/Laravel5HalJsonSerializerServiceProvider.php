@@ -42,15 +42,12 @@ class Laravel5HalJsonSerializerServiceProvider extends ServiceProvider
         $this->app->singleton(\NilPortugues\Laravel5\HalJsonSerializer\HalJsonSerializer::class, function ($app) {
                 $mapping = $app['config']->get('haljson');
                 $key = md5(json_encode($mapping));
-                $cachedMapping = Cache::get($key);
-                if (!empty($cachedMapping)) {
-                    return unserialize($cachedMapping);
-                }
-                self::parseNamedRoutes($mapping);
-                $serializer = new HalJsonSerializer(new HalJsonTransformer(new Mapper($mapping)));
-                Cache::put($key, serialize($serializer),60*60*24);
 
-                return $serializer;
+                return Cache::rememberForever($key, function () use ($mapping) {
+                    self::parseNamedRoutes($mapping);
+
+                    return new HalJsonSerializer(new HalJsonTransformer(new Mapper($mapping)));
+                });
             });
     }
     /**
@@ -67,7 +64,7 @@ class Laravel5HalJsonSerializerServiceProvider extends ServiceProvider
     /**
      * @param array $map
      */
-    private static function parseUrls(array &$map)
+    private static function parseUrls(&$map)
     {
         if (!empty($map['urls'])) {
             foreach ($map['urls'] as &$namedUrl) {
