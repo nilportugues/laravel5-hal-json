@@ -13,7 +13,7 @@
         }
     ],
     "require": {
-        "nilportugues/haljson": "~1.0",
+        "nilportugues/hal": "~1.0",
         "symfony/psr-http-message-bridge": "~0.2",
         "nilportugues/serializer-eloquent": "^1.0"
     },
