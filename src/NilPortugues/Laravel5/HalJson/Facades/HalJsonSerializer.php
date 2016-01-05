@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace NilPortugues\Laravel5\HalJsonSerializer\Facades;
+namespace NilPortugues\Laravel5\HalJson\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
@@ -23,6 +23,6 @@ class HalJsonSerializer extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return '\NilPortugues\Serializer\Serializer';
+        return '\NilPortugues\Laravel5\HalJson\HalJsonSerializer';
     }
 }

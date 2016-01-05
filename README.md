@@ -7,6 +7,7 @@
 [![License](https://poser.pugx.org/nilportugues/laravel5-haljson/license?)](https://packagist.org/packages/nilportugues/laravel5-haljson) 
 
 
+*Compatible with Laravel 5.0, 5.1 & 5.2*
 
 ## Installation
 
@@ -29,7 +30,7 @@ Open up `config/app.php` and add the following line under `providers` array:
 'providers' => [
 
     //...
-    \NilPortugues\Laravel5\HalJsonSerializer\Laravel5HalJsonSerializerServiceProvider::class,
+    \NilPortugues\Laravel5\HalJson\Laravel5HalJsonServiceProvider::class,
 ],
 ```
 
@@ -38,7 +39,7 @@ Open up `config/app.php` and add the following line under `providers` array:
 Open up `bootstrap/app.php`and add the following lines before the `return $app;` statement:
 
 ```php
-$app->register(\NilPortugues\Laravel5\HalJsonSerializer\Laravel5HalJsonSerializerServiceProvider::class);
+$app->register(\NilPortugues\Laravel5\HalJson\Laravel5HalJsonServiceProvider::class);
 $app->configure('haljson');
 ```
 
@@ -260,8 +261,8 @@ All of this set up allows you to easily use the `Serializer` service as follows:
 namespace App\Http\Controllers;
 
 use Acme\Domain\Dummy\PostRepository;
-use NilPortugues\Laravel5\HalJsonSerializer\HalJsonSerializer;
-use NilPortugues\Laravel5\HalJsonSerializer\HalJsonResponseTrait;
+use NilPortugues\Laravel5\HalJson\HalJson;
+use NilPortugues\Laravel5\HalJson\HalJsonResponseTrait;
 
 
 class PostController extends \Laravel\Lumen\Routing\Controller
@@ -271,21 +272,21 @@ class PostController extends \Laravel\Lumen\Routing\Controller
    /**
     * @var PostRepository
     */
-   private $postRepository;
+   protected $postRepository;
 
    /**
-    * @var HalJsonSerializer
+    * @var HalJson
     */
-   private $serializer;
+   protected $serializer;
 
    /**
     * @param PostRepository $postRepository
-    * @param HalJsonSerializer $halJsonSerializer
+    * @param HalJson $HalJson
     */
-   public function __construct(PostRepository $postRepository, HalJsonSerializer $halJsonSerializer)
+   public function __construct(PostRepository $postRepository, HalJson $HalJson)
    {
        $this->postRepository = $postRepository;
-       $this->serializer = $halJsonSerializer;
+       $this->serializer = $HalJson;
    }
 
    /**
@@ -311,7 +312,7 @@ class PostController extends \Laravel\Lumen\Routing\Controller
 
 ```
 HTTP/1.1 200 OK
-Cache-Control: private, max-age=0, must-revalidate
+Cache-Control: protected, max-age=0, must-revalidate
 Content-type: application/hal+json
 ```
 
@@ -409,16 +410,16 @@ Content-type: application/hal+json
 The following `HalJsonResponseTrait` methods are provided to return the right headers and HTTP status codes are available:
 
 ```php
-    private function errorResponse($json);
-    private function resourceCreatedResponse($json);
-    private function resourceDeletedResponse($json);
-    private function resourceNotFoundResponse($json);
-    private function resourcePatchErrorResponse($json);
-    private function resourcePostErrorResponse($json);
-    private function resourceProcessingResponse($json);
-    private function resourceUpdatedResponse($json);
-    private function response($json);
-    private function unsupportedActionResponse($json);
+    protected function errorResponse($json);
+    protected function resourceCreatedResponse($json);
+    protected function resourceDeletedResponse($json);
+    protected function resourceNotFoundResponse($json);
+    protected function resourcePatchErrorResponse($json);
+    protected function resourcePostErrorResponse($json);
+    protected function resourceProcessingResponse($json);
+    protected function resourceUpdatedResponse($json);
+    protected function response($json);
+    protected function unsupportedActionResponse($json);
 ```    
 
 ## Quality

@@ -19,12 +19,12 @@
     },
     "require-dev": {
         "laravel/laravel": "5.*",
-        "fabpot/php-cs-fixer": "~1.9",
-        "nilportugues/php_backslasher": "~0.2"
+        "phpunit/phpunit": "4.*",
+        "fabpot/php-cs-fixer": "^1.10"
     },
     "autoload": {
         "psr-4": {
-            "NilPortugues\\Laravel5\\HalJsonSerializer\\" : "src/NilPortugues/Laravel5/HalJsonSerializer/"
+            "NilPortugues\\Laravel5\\HalJson\\" : "src/NilPortugues/Laravel5/HalJson/"
         }
     },
     "config": {

@@ -9,15 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace NilPortugues\Laravel5\HalJsonSerializer;
+namespace NilPortugues\Laravel5\HalJson;
 
-use ErrorException;
-use Illuminate\Database\Eloquent\Model;
 use NilPortugues\Api\HalJson\HalJsonTransformer;
 use NilPortugues\Serializer\DeepCopySerializer;
 use NilPortugues\Serializer\Drivers\Eloquent\EloquentDriver;
-use ReflectionClass;
-use ReflectionMethod;
 
 /**
  * Class HalJsonSerializer.
@@ -41,12 +37,8 @@ class HalJsonSerializer extends DeepCopySerializer
      */
     protected function serializeObject($value)
     {
-
         $serialized = EloquentDriver::serialize($value);
-        if ($value !== $serialized) {
-            return $serialized;
-        }
 
-        return parent::serializeObject($value);
+        return ($value !== $serialized) ? $serialized : parent::serializeObject($value);
     }
 }
