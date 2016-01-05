@@ -111,8 +111,8 @@ return [
             'postId',
         ],
         'urls' => [
-            'self' => 'get_post', //named route
-            'comments' => 'get_post_comments',//named route
+            'self' => ['name' => 'get_post'], //named route
+            'comments' => ['name' => 'get_post_comments'],//named route
         ],
         'curies' => [
             'name' => 'example',
@@ -128,7 +128,7 @@ return [
             'postId',
         ],
         'urls' => [
-            'self' => 'get_post',//named route
+            'self' => ['name' => 'get_post'],//named route
         ],
         'curies' => [
             'name' => 'example',
@@ -144,9 +144,9 @@ return [
             'userId',
         ],
         'urls' => [
-            'self' => 'get_user',//named route
-            'friends' => 'get_user_friends',//named route
-            'comments' => 'get_user_comments',//named route
+            'self' => ['name' => 'get_user'],//named route
+            'friends' => ['name' => 'get_user_friends'],//named route
+            'comments' => ['name' => 'get_user_comments'],//named route
         ],
         'curies' => [
             'name' => 'example',
@@ -162,9 +162,9 @@ return [
             'userId',
         ],
         'urls' => [
-            'self' => 'get_user',//named route
-            'friends' => 'get_user_friends',//named route
-            'comments' => 'get_user_comments',//named route
+            'self' => ['name' => 'get_user'],//named route
+            'friends' => ['name' => 'get_user_friends'],//named route
+            'comments' => ['name' => 'get_user_comments'],//named route
         ],
         'curies' => [
             'name' => 'example',
@@ -180,7 +180,7 @@ return [
             'commentId',
         ],
         'urls' => [
-            'self' => 'get_comment',//named route
+            'self' => ['name' => 'get_comment'],//named route
         ],
         'curies' => [
             'name' => 'example',
@@ -196,7 +196,7 @@ return [
             'commentId',
         ],
         'urls' => [
-            'self' => 'get_comment',//named route
+            'self' => ['name' => 'get_comment'],//named route
         ],
         'curies' => [
             'name' => 'example',
