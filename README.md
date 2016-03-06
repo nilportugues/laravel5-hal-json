@@ -5,7 +5,7 @@
 [![Latest Stable Version](https://poser.pugx.org/nilportugues/laravel5-haljson/v/stable?)](https://packagist.org/packages/nilportugues/laravel5-haljson) 
 [![Total Downloads](https://poser.pugx.org/nilportugues/laravel5-haljson/downloads?)](https://packagist.org/packages/nilportugues/laravel5-haljson) 
 [![License](https://poser.pugx.org/nilportugues/laravel5-haljson/license?)](https://packagist.org/packages/nilportugues/laravel5-haljson) 
-
+[![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://paypal.me/nilportugues)
 
 *Compatible with Laravel 5.0, 5.1 & 5.2*
 
