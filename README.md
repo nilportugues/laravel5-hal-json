@@ -393,14 +393,6 @@ Content-type: application/hal+json
         "example:comments": {
             "href": "http://example.com/posts/9/comments"
         }
-    },
-    "_meta": {
-        "author": [
-            {
-                "name": "Nil Portugués Calderó",
-                "email": "contact@nilportugues.com"
-            }
-        ]
     }
 }
 ```
