@@ -14,7 +14,7 @@ namespace NilPortugues\Laravel5\HalJson;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 use NilPortugues\Laravel5\HalJson\Providers\Laravel51Provider;
-use NilPortugues\Laravel5\JsonApi\Providers\Laravel52Provider;
+use NilPortugues\Laravel5\HalJson\Providers\Laravel52Provider;
 
 class Laravel5HalJsonServiceProvider extends ServiceProvider
 {
