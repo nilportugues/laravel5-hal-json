@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace NilPortugues\Laravel5\JsonApi\Providers;
+namespace NilPortugues\Laravel5\HalJson\Providers;
 
 use Illuminate\Container\Container;
 use Illuminate\Routing\RouteCollection;
