@@ -6,14 +6,14 @@
 [![License](https://poser.pugx.org/nilportugues/laravel5-haljson/license?)](https://packagist.org/packages/nilportugues/laravel5-haljson) 
 [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://paypal.me/nilportugues)
 
-1. Installation
-2. Configuration
-3. Mapping
-    - 3.1 Mapping with arrays
-    - 3.2 Mapping with Mapping class
-4. HAL Serialization
-5. HAL Paginated Resource
-6. PSR-7 Response Objects
+1. [Installation](#1-installation)
+2. [Configuration](#2-configuration)
+3. [Mapping](#3-mapping)
+    - 3.1 [Mapping with arrays](#31-mapping-with-arrays)
+    - 3.2 [Mapping with Mapping class](#32-mapping-with-mapping-class)
+4. [HAL Serialization](#4-hal-serialization)
+5. [HAL Paginated Resource](#5-hal-paginated-resource)
+6. [PSR-7 Response Objects](#6-response-objects)
 
 ## 1. Installation
 
@@ -520,7 +520,7 @@ return [
 ];
 ```
 
-## 3. Serialization
+## 3. HAL Serialization
 
 All of this set up allows you to easily use the `Serializer` service as follows:
 
