@@ -10,16 +10,16 @@
 
 namespace NilPortugues\Laravel5\HalJson;
 
-use NilPortugues\Api\HalJson\Http\Message\ErrorResponse;
-use NilPortugues\Api\HalJson\Http\Message\ResourceCreatedResponse;
-use NilPortugues\Api\HalJson\Http\Message\ResourceDeletedResponse;
-use NilPortugues\Api\HalJson\Http\Message\ResourceNotFoundResponse;
-use NilPortugues\Api\HalJson\Http\Message\ResourcePatchErrorResponse;
-use NilPortugues\Api\HalJson\Http\Message\ResourcePostErrorResponse;
-use NilPortugues\Api\HalJson\Http\Message\ResourceProcessingResponse;
-use NilPortugues\Api\HalJson\Http\Message\ResourceUpdatedResponse;
-use NilPortugues\Api\HalJson\Http\Message\Response;
-use NilPortugues\Api\HalJson\Http\Message\UnsupportedActionResponse;
+use NilPortugues\Api\Hal\Http\Response\ErrorResponse;
+use NilPortugues\Api\Hal\Http\Response\ResourceCreatedResponse;
+use NilPortugues\Api\Hal\Http\Response\ResourceDeletedResponse;
+use NilPortugues\Api\Hal\Http\Response\ResourceNotFoundResponse;
+use NilPortugues\Api\Hal\Http\Response\ResourcePatchErrorResponse;
+use NilPortugues\Api\Hal\Http\Response\ResourcePostErrorResponse;
+use NilPortugues\Api\Hal\Http\Response\ResourceProcessingResponse;
+use NilPortugues\Api\Hal\Http\Response\ResourceUpdatedResponse;
+use NilPortugues\Api\Hal\Http\Response\Response;
+use NilPortugues\Api\Hal\Http\Response\UnsupportedActionResponse;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 

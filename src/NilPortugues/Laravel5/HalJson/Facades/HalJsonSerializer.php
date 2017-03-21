@@ -23,6 +23,6 @@ class HalJsonSerializer extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return '\NilPortugues\Laravel5\HalJson\HalJsonSerializer';
+        return \NilPortugues\Laravel5\HalJson\HalJsonSerializer::class;
     }
 }

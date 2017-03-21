@@ -11,7 +11,7 @@
 
 namespace NilPortugues\Laravel5\HalJson;
 
-use NilPortugues\Api\HalJson\HalJsonTransformer;
+use NilPortugues\Api\Hal\JsonTransformer;
 use NilPortugues\Serializer\DeepCopySerializer;
 use NilPortugues\Serializer\Drivers\Eloquent\EloquentDriver;
 
@@ -21,9 +21,11 @@ use NilPortugues\Serializer\Drivers\Eloquent\EloquentDriver;
 class HalJsonSerializer extends DeepCopySerializer
 {
     /**
-     * @param HalJsonTransformer $halJsonTransformer
+     * HalJsonSerializer constructor.
+     *
+     * @param JsonTransformer $halJsonTransformer
      */
-    public function __construct(HalJsonTransformer $halJsonTransformer)
+    public function __construct(JsonTransformer $halJsonTransformer)
     {
         parent::__construct($halJsonTransformer);
     }

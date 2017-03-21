@@ -13,13 +13,13 @@
         }
     ],
     "require": {
-        "nilportugues/hal": "~1.0",
-        "symfony/psr-http-message-bridge": "~0.2",
+        "nilportugues/hal": "^2.0",
+        "symfony/psr-http-message-bridge": "^0.4",
         "nilportugues/serializer-eloquent": "^1.0"
     },
     "require-dev": {
-        "laravel/laravel": "5.*",
-        "phpunit/phpunit": "4.*",
+        "laravel/laravel": "^5",
+        "phpunit/phpunit": "^4",
         "fabpot/php-cs-fixer": "^1.10"
     },
     "autoload": {

@@ -11,7 +11,8 @@
 namespace NilPortugues\Laravel5\HalJson\Providers;
 
 use Illuminate\Support\Facades\Cache;
-use NilPortugues\Api\HalJson\HalJsonTransformer;
+use NilPortugues\Api\Hal\HalPagination;
+use NilPortugues\Api\Hal\JsonTransformer;
 use NilPortugues\Api\Mapping\Mapping;
 use NilPortugues\Laravel5\HalJson\HalJsonSerializer;
 use NilPortugues\Laravel5\HalJson\Mapper\Mapper;
@@ -29,7 +30,7 @@ class Laravel51Provider
                 return $this->parseRoutes(new Mapper($app['config']->get('haljson')));
             });
 
-            return new HalJsonSerializer(new HalJsonTransformer($parsedRoutes));
+            return new HalJsonSerializer(new JsonTransformer($parsedRoutes));
         };
     }
 
@@ -40,7 +41,11 @@ class Laravel51Provider
      */
     protected function parseRoutes(Mapper $mapper)
     {
-        foreach ($mapper->getClassMap() as &$mapping) {
+        foreach ($mapper->getClassMap() as $key => &$mapping) {
+            if ($key === HalPagination::class) {
+                continue;
+            }
+
             $mappingClass = new \ReflectionClass($mapping);
 
             $this->setUrlWithReflection($mapping, $mappingClass, 'resourceUrlPattern');

@@ -1,5 +1,4 @@
-# Laravel 5 HAL+JSON Transformer Package
-
+# Laravel 5 HAL+JSON 
 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/nilportugues/laravel5-hal-json-transformer/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/nilportugues/laravel5-hal-json-transformer/?branch=master) [![SensioLabsInsight](https://insight.sensiolabs.com/projects/93029d8e-7052-42e0-a7db-fabbd2e566d5/mini.png?)](https://insight.sensiolabs.com/projects/93029d8e-7052-42e0-a7db-fabbd2e566d5) 
 [![Latest Stable Version](https://poser.pugx.org/nilportugues/laravel5-haljson/v/stable?)](https://packagist.org/packages/nilportugues/laravel5-haljson) 
@@ -7,9 +6,16 @@
 [![License](https://poser.pugx.org/nilportugues/laravel5-haljson/license?)](https://packagist.org/packages/nilportugues/laravel5-haljson) 
 [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://paypal.me/nilportugues)
 
-*Compatible with Laravel 5.0, 5.1 & 5.2*
+1. Installation
+2. Configuration
+3. Mapping
+    - 3.1 Mapping with arrays
+    - 3.2 Mapping with Mapping class
+4. HAL Serialization
+5. HAL Paginated Resource
+6. PSR-7 Response Objects
 
-## Installation
+## 1. Installation
 
 Use [Composer](https://getcomposer.org) to install the package:
 
@@ -17,12 +23,7 @@ Use [Composer](https://getcomposer.org) to install the package:
 $ composer require nilportugues/laravel5-haljson
 ```
 
-
-## Laravel 5 / Lumen Configuration
-
-**Step 1: Add the Service Provider**
-
-**Laravel**
+## 2. Configuration
 
 Open up `config/app.php` and add the following line under `providers` array:
 
@@ -34,26 +35,13 @@ Open up `config/app.php` and add the following line under `providers` array:
 ],
 ```
 
-**Lumen**
-
-Open up `bootstrap/app.php`and add the following lines before the `return $app;` statement:
-
-```php
-$app->register(\NilPortugues\Laravel5\HalJson\Laravel5HalJsonServiceProvider::class);
-$app->configure('haljson');
-```
-
 Also, enable Facades by uncommenting:
 
 ```php
 $app->withFacades();
 ```
 
-**Step 2: Add the mapping**
-
-Create a `haljson.php` file in `config/` directory. This file should return an array returning all the class mappings.
-
-**Step 3: Usage**
+## 3. Mapping
 
 For instance, lets say the following object has been fetched from a Repository , lets say `PostRepository` - this being implemented in Eloquent or whatever your flavour is:
 
@@ -89,6 +77,37 @@ $post = new Post(
   ]
 );
 ```
+
+We will have to map all the involved classes. This can be done as one single array, or a series of Mapping classes.
+
+Also we will require to have routes. The routes must be named routes. 
+
+For instance our `app/Http/routes.php` file contains the following routes: 
+
+```php
+Route::get(
+  '/docs/rels/{rel}',
+  ['as' => 'get_example_curie_rel', 'uses' => 'ExampleCurieController@getRelAction']
+);
+
+
+Route::get(
+  '/post/{postId}',
+  ['as' => 'get_post', 'uses' => 'PostController@getPostAction']
+);
+
+Route::get(
+  '/post/{postId}/comments',
+  ['as' => 'get_post_comments', 'uses' => 'CommentsController@getPostCommentsAction']
+);
+
+//...
+```
+
+
+### 3.1 Mapping with arrays
+
+Create a `haljson.php` file in `config/` directory. This file should return an array returning all the class mappings.
 
 And a series of mappings, placed in `bootstrap/haljson.php`, that require to use *named routes* so we can use the `route()` helper function:
 
@@ -207,51 +226,301 @@ return [
 
 ```
 
+### 3.2 Mapping with Mapping class
 
-The named routes belong to the `app/Http/routes.php`. Here's a sample for the routes provided mapping:
+In order to map with Mapping class, you need to create a new class for each involved class.
 
-**Laravel**
+This mapping fashion scales way better than using an array. Place each mapping in a separate file.
 
-```php
-Route::get(
-  '/docs/rels/{rel}',
-  ['as' => 'get_example_curie_rel', 'uses' => 'ExampleCurieController@getRelAction']
-);
-
-
-Route::get(
-  '/post/{postId}',
-  ['as' => 'get_post', 'uses' => 'PostController@getPostAction']
-);
-
-Route::get(
-  '/post/{postId}/comments',
-  ['as' => 'get_post_comments', 'uses' => 'CommentsController@getPostCommentsAction']
-);
-
-//...
-```
-
-**Lumen**
+All Mapping classes will extend the `\NilPortugues\Api\Mappings\HalMapping` interface. 
 
 ```php
-$app->get(
-  '/docs/rels/{rel}',
-  ['as' => 'get_example_curie_rel', 'uses' => 'ExampleCurieController@getRelAction']
-);
+<?php
 
-$app->get(
-  '/post/{postId}',
-  ['as' => 'get_post', 'uses' => 'PostController@getPostAction']
-);
+class PostMapping implements \NilPortugues\Api\Mappings\HalMapping {
 
-$app->get(
-  '/post/{postId}/comments',
-  ['as' => 'get_post_comments', 'uses' => 'CommentsController@getPostCommentsAction']
-);
+    public function getClass()
+    {
+        return 'Acme\Domain\Dummy\Post';
+    }
 
-//...
+    public function getAlias()
+    {
+        return 'Message';
+    }
+
+    public function getAliasedProperties()
+    {
+        return [
+            'author' => 'author',
+            'title' => 'headline',
+            'content' => 'body',
+        ];
+    }
+
+    public function getHideProperties()
+    {
+        return [];
+    }
+
+    public function getIdProperties()
+    {
+        return ['postId'];
+    }
+
+    public function getUrls()
+    {
+        return [
+            'self' => ['name' => 'get_post'], //named route
+            'comments' => ['name' => 'get_post_comments'],//named route
+        ];
+    }
+
+    public function getCuries()
+    {
+        return [
+            'name' => 'example',
+            'href' => "http://example.com/docs/rels/{rel}",
+        ];
+    }
+}
+
+class PostIdMapping implements \NilPortugues\Api\Mappings\HalMapping{
+
+    public function getClass()
+    {
+        return 'Acme\Domain\Dummy\ValueObject\PostId';
+    }
+
+    public function getAlias()
+    {
+        return '';
+    }
+
+    public function getAliasedProperties()
+    {
+        return [];
+    }
+
+    public function getHideProperties()
+    {
+        return [];
+    }
+
+    public function getIdProperties()
+    {
+        return ['postId'];
+    }
+
+    public function getUrls()
+    {
+        return [
+            'self' => ['name' => 'get_post'],//named route
+        ];
+    }
+
+    public function getCuries()
+    {
+        return [
+            'name' => 'example',
+            'href' => "http://example.com/docs/rels/{rel}",
+        ];
+    }
+}
+
+class UserMapping implements \NilPortugues\Api\Mappings\HalMapping{
+
+    public function getClass()
+    {
+        return 'Acme\Domain\Dummy\User';
+    }
+
+    public function getAlias()
+    {
+        return '';
+    }
+
+    public function getAliasedProperties()
+    {
+        return [];
+    }
+
+    public function getHideProperties()
+    {
+        return [];
+    }
+
+    public function getIdProperties()
+    {
+        return ['userId'];
+    }
+
+    public function getUrls()
+    {
+        return [
+            'self' => ['name' => 'get_user'],//named route
+            'friends' => ['name' => 'get_user_friends'],//named route
+            'comments' => ['name' => 'get_user_comments'],//named route
+        ];
+    }
+
+    public function getCuries()
+    {
+        return [
+            'name' => 'example',
+            'href' => "http://example.com/docs/rels/{rel}",
+        ];
+    }
+}
+
+class UserIdMapping implements \NilPortugues\Api\Mappings\HalMapping{    
+    
+    public function getClass()
+    {
+        return 'Acme\Domain\Dummy\ValueObject\UserId';
+    }
+
+    public function getAlias()
+    {
+        return '';
+    }
+
+    public function getAliasedProperties()
+    {
+        return [];
+    }
+
+    public function getHideProperties()
+    {
+        return [];
+    }
+
+    public function getIdProperties()
+    {
+        return ['userId'];
+    }
+
+    public function getUrls()
+    {
+        return [
+            'self' => ['name' => 'get_user'],//named route
+            'friends' => ['name' => 'get_user_friends'],//named route
+            'comments' => ['name' => 'get_user_comments'],//named route
+        ];
+    }
+
+    public function getCuries()
+    {
+        return [
+            'name' => 'example',
+            'href' => "http://example.com/docs/rels/{rel}",
+        ];
+    }
+}
+
+class CommentMapping implements \NilPortugues\Api\Mappings\HalMapping{
+
+    public function getClass()
+    {
+        return 'Acme\Domain\Dummy\Comment';
+    }
+
+    public function getAlias()
+    {
+        return '';
+    }
+
+    public function getAliasedProperties()
+    {
+        return [];
+    }
+
+    public function getHideProperties()
+    {
+        return [];
+    }
+
+    public function getIdProperties()
+    {
+        return ['commentId'];
+    }
+
+    public function getUrls()
+    {
+        return [
+            'self' => ['name' => 'get_comment'],//named route
+        ];
+    }
+
+    public function getCuries()
+    {
+        return [
+            'name' => 'example',
+            'href' => "http://example.com/docs/rels/{rel}",
+        ];
+    }
+}
+
+class CommentIdMapping implements \NilPortugues\Api\Mappings\HalMapping{
+
+    public function getClass()
+    {
+        return 'Acme\Domain\Dummy\ValueObject\CommentId';
+    }
+
+    public function getAlias()
+    {
+        return '';
+    }
+
+    public function getAliasedProperties()
+    {
+        return [];
+    }    
+
+    public function getHideProperties()
+    {
+        return [];
+    }
+
+    public function getIdProperties()
+    {
+        return ['commentId'];
+    }
+
+    public function getUrls()
+    {
+        return [
+            'self' => ['name' => 'get_comment'],//named route
+        ];
+    }
+
+    public function getCuries()
+    {
+        return [
+            'name' => 'example',
+            'href' => "http://example.com/docs/rels/{rel}",
+        ];
+    }
+}    
 ```
+
+All the mappings will be contained in the array in the `bootstrap/haljson.php`, but this time the fully qualified class name is required instead.
+
+```php
+<?php
+//bootstrap/haljson.php
+return [
+    "\Acme\Mappings\PostMapping",
+    "\Acme\Mappings\PostIdMapping",
+    "\Acme\Mappings\UserMapping",
+    "\Acme\Mappings\UserIdMapping",
+    "\Acme\Mappings\CommentMapping",
+    "\Acme\Mappings\CommentIdMapping",
+];
+```
+
+## 3. Serialization
 
 All of this set up allows you to easily use the `Serializer` service as follows:
 
@@ -261,11 +530,10 @@ All of this set up allows you to easily use the `Serializer` service as follows:
 namespace App\Http\Controllers;
 
 use Acme\Domain\Dummy\PostRepository;
-use NilPortugues\Laravel5\HalJson\HalJson;
 use NilPortugues\Laravel5\HalJson\HalJsonResponseTrait;
 
 
-class PostController extends \Laravel\Lumen\Routing\Controller
+class PostController extends \App\Http\Controllers\Controller
 {
     use HalJsonResponseTrait;
        
@@ -297,11 +565,6 @@ class PostController extends \Laravel\Lumen\Routing\Controller
    public function getPostAction($postId)
    {
        $post = $this->postRepository->findById($postId);
-
-       /** @var \NilPortugues\Api\HalJson\HalJsonTransformer $transformer */
-       $transformer = $this->serializer->getTransformer();
-       $transformer->setSelfUrl(route('get_post', ['postId' => $postId]));
-       $transformer->setNextUrl(route('get_post', ['postId' => $postId+1]));
 
        return $this->response($this->serializer->serialize($post));
    }
@@ -384,9 +647,6 @@ Content-type: application/hal+json
         "self": {
             "href": "http://example.com/posts/9"
         },
-        "next": {
-            "href": "http://example.com/posts/10"
-        },
         "example:author": {
             "href": "http://example.com/users/1"
         },
@@ -397,7 +657,57 @@ Content-type: application/hal+json
 }
 ```
 
-#### Response objects (HalJsonResponseTrait)
+
+## 5. HAL Paginated Resource
+
+A pagination object to easy the usage of this package is provided. 
+
+For both XML and JSON output, use the `HalPagination` object to build your paginated representation of the current resource.
+ 
+Methods provided by `HalPagination` are as follows: 
+
+ - `setSelf($self)`
+ - `setFirst($first)`
+ - `setPrev($prev)`
+ - `setNext($next)`
+ - `setLast($last)`
+ - `setCount($count)`
+ - `setTotal($total)`
+ - `setEmbedded(array $embedded)`
+ 
+In order to use it, create a new HalPagination instance, use the setters and pass the instance to the `serialize($value)` method of the serializer. 
+
+Everything else will be handled by serializer itself. Easy as that!
+ 
+```php
+use NilPortugues\Api\Hal\HalPagination; 
+use NilPortugues\Api\Hal\HalSerializer; 
+use NilPortugues\Api\Hal\JsonTransformer; 
+
+// ...
+//$objects is an array of objects, such as Post::class.
+// ...
+ 
+$page = new HalPagination();
+
+//set the amounts
+$page->setTotal(20);
+$page->setCount(10);
+
+//set the objects
+$page->setEmbedded($objects);
+
+//set up the pagination links
+$page->setSelf('/post?page=1');
+$page->setPrev('/post?page=1');
+$page->setFirst('/post?page=1');
+$page->setLast('/post?page=1');
+
+$output = $serializer->serialize($page);
+
+``` 
+
+## 6. Response objects
 
 The following `HalJsonResponseTrait` methods are provided to return the right headers and HTTP status codes are available:
 
@@ -420,33 +730,27 @@ To run the PHPUnit tests at the command line, go to the tests directory and issu
 
 This library attempts to comply with [PSR-1](http://www.php-fig.org/psr/psr-1/), [PSR-2](http://www.php-fig.org/psr/psr-2/), [PSR-4](http://www.php-fig.org/psr/psr-4/) and [PSR-7](http://www.php-fig.org/psr/psr-7/).
 
-If you notice compliance oversights, please send a patch via [Pull Request](https://github.com/nilportugues/laravel5-haljson-transformer/pulls).
+If you notice compliance oversights, please send a patch via [Pull Request](https://github.com/nilportugues/laravel5-hal-json/pulls).
 
-
-<br>
 ## Contribute
 
 Contributions to the package are always welcome!
 
-* Report any bugs or issues you find on the [issue tracker](https://github.com/nilportugues/laravel5-haljson-transformer/issues/new).
-* You can grab the source code at the package's [Git repository](https://github.com/nilportugues/laravel5-haljson-transformer).
+* Report any bugs or issues you find on the [issue tracker](https://github.com/nilportugues/laravel5-hal-json/issues/new).
+* You can grab the source code at the package's [Git repository](https://github.com/nilportugues/laravel5-hal-json).
 
 
-<br>
 ## Support
 
 Get in touch with me using one of the following means:
 
  - Emailing me at <contact@nilportugues.com>
- - Opening an [Issue](https://github.com/nilportugues/laravel5-haljson-transformer/issues/new)
- - Using Gitter: [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/nilportugues/laravel5-haljson-transformer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+ - Opening an [Issue](https://github.com/nilportugues/laravel5-hal-json/issues/new)
 
-
-<br>
 ## Authors
 
 * [Nil Portugués Calderó](http://nilportugues.com)
-* [The Community Contributors](https://github.com/nilportugues/laravel5-haljson-transformer/graphs/contributors)
+* [The Community Contributors](https://github.com/nilportugues/laravel5-hal-json/graphs/contributors)
 
 
 ## License
