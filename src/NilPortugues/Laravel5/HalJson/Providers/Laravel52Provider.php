@@ -20,6 +20,7 @@ use ReflectionClass;
  */
 class Laravel52Provider extends Laravel51Provider
 {
+
     /**
      * @var RouteCollection
      */
